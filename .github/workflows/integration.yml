@@ -35,6 +35,8 @@ jobs:
               if [ "$name" = "spec" ]; then echo "::warning::optional repo spec not found, skipping"; else exit 1; fi
             fi
           done
+          # source only (examples read by tests/playground-examples.test.ts), not in the workspace
+          git clone --depth 1 "https://x-access-token:${GH_TOKEN}@github.com/Run-IQ/web-platform.git" web-platform
       - run: npm run bootstrap
         working-directory: integration-tests
       - run: npm run build:all

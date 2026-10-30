@@ -14,7 +14,7 @@ npm run test:all    # npm test in each repo, reports every failure at the end
 npm test            # cross-repo scenarios (this repo)
 ```
 
-`bootstrap` fails with the `gh repo clone` command for any missing repo. `spec` is built first once its folder exists; it is skipped until then. `web-platform` is not part of the workspace.
+`bootstrap` fails with the `gh repo clone` command for any missing repo. `spec` is built first once its folder exists; it is skipped until then. `web-platform` is not part of the workspace (a Next.js app); `tests/playground-examples.test.ts` only reads its `src/lib/examples.ts`, so the folder must exist next to this one (`gh repo clone Run-IQ/web-platform`; no install needed).
 
 Generated files `../package.json`, `../package-lock.json`, `../node_modules` live outside any repo. Installing can set the executable bit on `cli/bin/run-iq.js`; revert with `git -C ../cli checkout -- bin/run-iq.js`. npm prints a warning that it ignores the workspace config of this `.npmrc`; the root `.npmrc` copy is the one used.
 
@@ -49,7 +49,7 @@ npm deprecate @run-iq/policy-bridge@"*" "Moved to GitHub Packages: https://githu
 
 ## CI
 
-`.github/workflows/integration.yml` runs on push, pull request and nightly: it clones the repos of `scripts/repos.mjs` next to this one, then runs `bootstrap`, `build:all`, `test:all` and `test`. It needs a secret `RUN_IQ_REPOS_TOKEN` (a personal access token with `repo` and `read:packages`), because `plugin-fiscal` is private.
+`.github/workflows/integration.yml` runs on push, pull request and nightly: it clones the repos of `scripts/repos.mjs` and `web-platform` (source only, not in the workspace) next to this one, then runs `bootstrap`, `build:all`, `test:all` and `test`. It needs a secret `RUN_IQ_REPOS_TOKEN` (a personal access token with `repo` and `read:packages`), because `plugin-fiscal` is private.
 
 ## License
 
