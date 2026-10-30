@@ -11,6 +11,7 @@ export NODE_AUTH_TOKEN=$(gh auth token)   # GitHub Packages read access
 npm run bootstrap   # writes ../package.json and ../.npmrc (workspace), runs npm install at the root
 npm run build:all   # npm run build in each repo, in dependency order, stops at first failure
 npm run test:all    # npm test in each repo, reports every failure at the end
+npm run ci:local    # each repo's ci.yml steps on a clean copy of its HEAD, outside the workspace
 npm test            # cross-repo scenarios (this repo)
 ```
 
@@ -49,7 +50,7 @@ npm deprecate @run-iq/policy-bridge@"*" "Moved to GitHub Packages: https://githu
 
 ## CI
 
-`.github/workflows/integration.yml` runs on push, pull request and nightly: it clones the repos of `scripts/repos.mjs` and `web-platform` (source only, not in the workspace) next to this one, then runs `bootstrap`, `build:all`, `test:all` and `test`. It needs a secret `RUN_IQ_REPOS_TOKEN` (a personal access token with `repo` and `read:packages`), because `plugin-fiscal` is private.
+`.github/workflows/integration.yml` runs on push to master, pull requests, on demand and weekly: it clones the repos of `scripts/repos.mjs` and `web-platform` (source only, not in the workspace) next to this one, then runs `bootstrap`, `build:all`, `test:all` and `test`. It needs a secret `RUN_IQ_REPOS_TOKEN` (a personal access token with `repo` and `read:packages`), because `plugin-fiscal` is private.
 
 ## License
 
