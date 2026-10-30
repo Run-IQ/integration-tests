@@ -1,0 +1,33 @@
+{
+  "name": "@run-iq/integration-tests",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Cross-repo build and integration tests for Run-IQ",
+  "type": "module",
+  "scripts": {
+    "bootstrap": "node scripts/bootstrap.mjs",
+    "build:all": "node scripts/run-all.mjs build",
+    "test:all": "node scripts/run-all.mjs test",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint tests/ && prettier --check tests/ scripts/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Run-IQ/integration-tests.git"
+  },
+  "author": "Abdou-Raouf ATARMLA",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "@typescript-eslint/eslint-plugin": "^7.0.0",
+    "@typescript-eslint/parser": "^7.0.0",
+    "eslint": "^8.57.0",
+    "prettier": "^3.2.0",
+    "typescript": "^5.4.0",
+    "vitest": "^4.1.0"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}
