@@ -7,7 +7,7 @@ export const SELF = resolve(HERE, '..');
 export const ROOT = resolve(SELF, '..');
 
 /** Build order (topological). web-platform is excluded on purpose (Task 4). */
-const ALL = [
+export const ALL_REPOS = [
   'spec',
   'core',
   'context-engine',
@@ -26,4 +26,4 @@ const ALL = [
 ];
 
 /** `spec` is optional: skipped while the folder does not exist. */
-export const REPOS = ALL.filter((name) => name !== 'spec' || existsSync(resolve(ROOT, name)));
+export const REPOS = ALL_REPOS.filter((name) => name !== 'spec' || existsSync(resolve(ROOT, name)));

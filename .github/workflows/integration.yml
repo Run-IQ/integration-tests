@@ -27,9 +27,13 @@ jobs:
           scope: '@run-iq'
       - name: Clone sibling repositories
         run: |
-          REPOS=$(node -e "import('./integration-tests/scripts/repos.mjs').then(m => console.log(m.REPOS.join(' ')))")
-          for name in $REPOS; do
-            git clone --depth 1 "https://x-access-token:${GH_TOKEN}@github.com/Run-IQ/${name}.git" "$name"
+          # unfiltered list: REPOS drops `spec` while its folder is missing
+          ALL=$(node -e "import('./integration-tests/scripts/repos.mjs').then(m => console.log(m.ALL_REPOS.join(' ')))")
+          for name in $ALL; do
+            if ! git clone --depth 1 "https://x-access-token:${GH_TOKEN}@github.com/Run-IQ/${name}.git" "$name"; then
+              # spec is optional until its repository exists
+              if [ "$name" = "spec" ]; then echo "::warning::optional repo spec not found, skipping"; else exit 1; fi
+            fi
           done
       - run: npm run bootstrap
         working-directory: integration-tests
