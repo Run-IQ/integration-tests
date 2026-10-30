@@ -29,8 +29,27 @@ Generated files `../package.json`, `../package-lock.json`, `../node_modules` liv
 | Repo | State |
 | --- | --- |
 | core, context-engine, dsl-jsonlogic, plugin-sdk, decision-graph, rule-registry, plugin-fiscal, policy-dsl, policy-graph, policy-engine, policy-bridge, mcp-server | green |
-| cli | red, 2 tests in `tests/commands/validate.test.ts` (invalid rules are reported valid against local core 0.2.8; the repo's lockfile pins published core 0.2.7) |
-| server | red, 2 tests in `tests/standalone.test.ts` (expect `plugin-fiscal`/`dsl-jsonlogic` to be absent; they are installed in the workspace) |
+| cli | was red, 2 tests in `tests/commands/validate.test.ts` (core 0.2.8 `hydrateRules` throws on wrong-typed fields, core 0.2.7 did not); tests fixed, now green |
+| server | was red, 2 tests in `tests/standalone.test.ts` (expected `plugin-fiscal`/`dsl-jsonlogic` to be absent; they are installed in the workspace); tests now simulate the missing package, now green |
+
+## Deprecating the npm public versions
+
+Releases go to GitHub Packages only. Old versions of these packages exist on the public npm registry (`decision-graph`, `context-engine`, `rule-registry`, `policy-engine`, `policy-dsl` and `policy-graph` were never published there). Deprecation needs the npm account that owns the `@run-iq` scope, so run these yourself after `npm login`; they are not run by any script:
+
+```bash
+npm deprecate @run-iq/core@"*" "Moved to GitHub Packages: https://github.com/orgs/Run-IQ/packages" --registry https://registry.npmjs.org
+npm deprecate @run-iq/plugin-sdk@"*" "Moved to GitHub Packages: https://github.com/orgs/Run-IQ/packages" --registry https://registry.npmjs.org
+npm deprecate @run-iq/dsl-jsonlogic@"*" "Moved to GitHub Packages: https://github.com/orgs/Run-IQ/packages" --registry https://registry.npmjs.org
+npm deprecate @run-iq/plugin-fiscal@"*" "Moved to GitHub Packages: https://github.com/orgs/Run-IQ/packages" --registry https://registry.npmjs.org
+npm deprecate @run-iq/mcp-server@"*" "Moved to GitHub Packages: https://github.com/orgs/Run-IQ/packages" --registry https://registry.npmjs.org
+npm deprecate @run-iq/cli@"*" "Moved to GitHub Packages: https://github.com/orgs/Run-IQ/packages" --registry https://registry.npmjs.org
+npm deprecate @run-iq/server@"*" "Moved to GitHub Packages: https://github.com/orgs/Run-IQ/packages" --registry https://registry.npmjs.org
+npm deprecate @run-iq/policy-bridge@"*" "Moved to GitHub Packages: https://github.com/orgs/Run-IQ/packages" --registry https://registry.npmjs.org
+```
+
+## CI
+
+`.github/workflows/integration.yml` runs on push, pull request and nightly: it clones the repos of `scripts/repos.mjs` next to this one, then runs `bootstrap`, `build:all`, `test:all` and `test`. It needs a secret `RUN_IQ_REPOS_TOKEN` (a personal access token with `repo` and `read:packages`), because `plugin-fiscal` is private.
 
 ## License
 

@@ -1,0 +1,41 @@
+name: Integration
+
+on:
+  push:
+  pull_request:
+  schedule:
+    - cron: '0 3 * * *'
+
+permissions:
+  contents: read
+
+jobs:
+  integration:
+    runs-on: ubuntu-latest
+    env:
+      # Needs read access to Run-IQ/plugin-fiscal (private) and read:packages.
+      GH_TOKEN: ${{ secrets.RUN_IQ_REPOS_TOKEN }}
+      NODE_AUTH_TOKEN: ${{ secrets.RUN_IQ_REPOS_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: integration-tests
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: https://npm.pkg.github.com
+          scope: '@run-iq'
+      - name: Clone sibling repositories
+        run: |
+          REPOS=$(node -e "import('./integration-tests/scripts/repos.mjs').then(m => console.log(m.REPOS.join(' ')))")
+          for name in $REPOS; do
+            git clone --depth 1 "https://x-access-token:${GH_TOKEN}@github.com/Run-IQ/${name}.git" "$name"
+          done
+      - run: npm run bootstrap
+        working-directory: integration-tests
+      - run: npm run build:all
+        working-directory: integration-tests
+      - run: npm run test:all
+        working-directory: integration-tests
+      - run: npm test
+        working-directory: integration-tests
